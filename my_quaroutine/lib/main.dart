@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:my_quaroutine/theme/style.dart';
 import 'lol.dart';
+import 'database_helpers.dart';
 
 import 'package:my_quaroutine/models/Activity.dart';
-
-import 'dart:async';
-
-import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
 
 void main() => runApp(MyApp());
 
@@ -16,6 +12,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      routes: {
+        MyCustomForm.routeName: (context) => MyCustomForm(),
+      },
       title: 'My QuaRoutine',
       theme: appTheme(),
       home: MyHomePage(title: 'My QuaRoutine'),
@@ -33,11 +32,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<String> items = ["Outdoor fitness goal", "Personal goals", "Shopping trip"];
-
   @override
   Widget build(BuildContext context) {
-    create_database();
+    createDatabase();
     for (int i = 0; i < 29; i++) {
       //deleteDog(i);
     }
@@ -50,45 +47,10 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-void create_database() async {
-  //await deleteDatabase(join(await getDatabasesPath(), 'activity_database.db'));
-
-  final Future<Database> database = openDatabase(
-    // Set the path to the database.
-    join(await getDatabasesPath(), 'activity_database.db'),
-    // When the database is first created, create a table to store dogs.
-    onCreate: (db, version) {
-      // Run the CREATE TABLE statement on the database.
-      return db.execute(
-        "CREATE TABLE dogs(id INTEGER PRIMARY KEY, name TEXT, type TEXT)",
-      );
-    },
-    // Set the version. This executes the onCreate function and provides a
-    // path to perform database upgrades and downgrades.
-    version: 1,
-  );
-}
-
-Future<void> deleteDog(int id) async {
-  final Future<Database> database = openDatabase(
-    join(await getDatabasesPath(), 'activity_database.db'),
-  );
-
-  // Get a reference to the database.
-  final db = await database;
-
-  // Remove the Dog from the Database.
-  await db.delete(
-    'dogs',
-    // Use a `where` clause to delete a specific dog.
-    where: "id = ?",
-    // Pass the Dog's id as a whereArg to prevent SQL injection.
-    whereArgs: [id],
-  );
-}
 
 Widget projectWidget() {
-  List<String> cats = ["Personal goals", "Indoor fitness goal", "Shopping trips"];
+  List<String> cats = ["Personal", "Indoor fitness goal", "Shopping trips"];
+
   return new FutureBuilder<List<Activity>>(
     future: dogs(), // async work
     builder: (BuildContext context, AsyncSnapshot<List<Activity>> snapshot) {
@@ -113,16 +75,7 @@ Widget projectWidget() {
                       )),
                   Container(
                       height: 100.0,
-                      child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: snapshot.data.length + 1,
-                          itemBuilder: (context, index) {
-                            if (index == snapshot.data.length) {
-                              return newActivity(context);
-                            }
-                            return activityButton(
-                                context, snapshot.data[index].name);
-                          }))
+                      child: listView(cats[index], snapshot.data))
                 ]);
               },
             );
@@ -140,21 +93,46 @@ Widget activityButton(context, String text) {
       shape: RoundedRectangleBorder(
           borderRadius: new BorderRadius.circular(0.0),
           side: BorderSide(color: Colors.red)),
-      onPressed: () {
-        null;
-      });
+      onPressed: () {});
 }
 
-Widget newActivity(context) {
+Widget newActivity(context, type) {
   return FlatButton(
       child: Icon(Icons.add),
       shape: RoundedRectangleBorder(
           borderRadius: new BorderRadius.circular(0.0),
           side: BorderSide(color: Colors.red)),
       onPressed: () {
-        Navigator.push(
+        Navigator.pushNamed(
           context,
-          MaterialPageRoute(builder: (context) => MyCustomForm()),
+          MyCustomForm.routeName,
+          arguments: ScreenArguments(
+            type,
+          ),
         );
+      });
+}
+
+// You can pass any object to the arguments parameter.
+// In this example, create a class that contains a customizable
+// title and message.
+class ScreenArguments {
+  final String type;
+
+  ScreenArguments(this.type, );
+}
+
+
+Widget listView(type, data){
+  List<Activity> meme = data.where((i) => i.type == type).toList();
+  return ListView.builder(
+      scrollDirection: Axis.horizontal,
+      itemCount: meme.length + 1,
+      itemBuilder: (context, index) {
+        if (index == meme.length) {
+          return newActivity(context, type);
+        }
+        return activityButton(
+            context, meme[index].name);
       });
 }
