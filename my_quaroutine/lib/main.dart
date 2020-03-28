@@ -1,4 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:my_quaroutine/theme/style.dart';
+import 'lol.dart';
+
+import 'package:my_quaroutine/models/Activity.dart';
+
+import 'dart:async';
+
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
 
 void main() => runApp(MyApp());
 
@@ -7,35 +16,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      title: 'My QuaRoutine',
+      theme: appTheme(),
+      home: MyHomePage(title: 'My QuaRoutine'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
 
   final String title;
 
@@ -44,68 +33,128 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
+  List<String> items = ["Outdoor fitness goal", "Personal goals", "Shopping trip"];
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+    create_database();
+    for (int i = 0; i < 29; i++) {
+      //deleteDog(i);
+    }
+
     return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
-            ),
-          ],
+        appBar: AppBar(
+          title: Text(widget.title),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+        body: projectWidget());
   }
+}
+
+void create_database() async {
+  //await deleteDatabase(join(await getDatabasesPath(), 'activity_database.db'));
+
+  final Future<Database> database = openDatabase(
+    // Set the path to the database.
+    join(await getDatabasesPath(), 'activity_database.db'),
+    // When the database is first created, create a table to store dogs.
+    onCreate: (db, version) {
+      // Run the CREATE TABLE statement on the database.
+      return db.execute(
+        "CREATE TABLE dogs(id INTEGER PRIMARY KEY, name TEXT, type TEXT)",
+      );
+    },
+    // Set the version. This executes the onCreate function and provides a
+    // path to perform database upgrades and downgrades.
+    version: 1,
+  );
+}
+
+Future<void> deleteDog(int id) async {
+  final Future<Database> database = openDatabase(
+    join(await getDatabasesPath(), 'activity_database.db'),
+  );
+
+  // Get a reference to the database.
+  final db = await database;
+
+  // Remove the Dog from the Database.
+  await db.delete(
+    'dogs',
+    // Use a `where` clause to delete a specific dog.
+    where: "id = ?",
+    // Pass the Dog's id as a whereArg to prevent SQL injection.
+    whereArgs: [id],
+  );
+}
+
+Widget projectWidget() {
+  List<String> cats = ["Personal goals", "Indoor fitness goal", "Shopping trips"];
+  return new FutureBuilder<List<Activity>>(
+    future: dogs(), // async work
+    builder: (BuildContext context, AsyncSnapshot<List<Activity>> snapshot) {
+      switch (snapshot.connectionState) {
+        case ConnectionState.waiting:
+          return new Text('Loading....');
+        default:
+          if (snapshot.hasError)
+            return new Text('Error: ${snapshot.error}');
+          else
+            return ListView.separated(
+              itemCount: cats.length,
+
+              separatorBuilder: (BuildContext context, int index) => Divider(height: 20, color: Colors.white,),
+              itemBuilder: (context, index) {
+                return Column(children: <Widget>[
+                  Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        '${cats[index]}',
+                        style: TextStyle(fontSize: 30.0),
+                      )),
+                  Container(
+                      height: 100.0,
+                      child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: snapshot.data.length + 1,
+                          itemBuilder: (context, index) {
+                            if (index == snapshot.data.length) {
+                              return newActivity(context);
+                            }
+                            return activityButton(
+                                context, snapshot.data[index].name);
+                          }))
+                ]);
+              },
+            );
+      }
+    },
+  );
+}
+
+Widget activityButton(context, String text) {
+  return FlatButton(
+      child: Text(
+        text,
+        style: TextStyle(fontSize: 20.0),
+      ),
+      shape: RoundedRectangleBorder(
+          borderRadius: new BorderRadius.circular(0.0),
+          side: BorderSide(color: Colors.red)),
+      onPressed: () {
+        null;
+      });
+}
+
+Widget newActivity(context) {
+  return FlatButton(
+      child: Icon(Icons.add),
+      shape: RoundedRectangleBorder(
+          borderRadius: new BorderRadius.circular(0.0),
+          side: BorderSide(color: Colors.red)),
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => MyCustomForm()),
+        );
+      });
 }
