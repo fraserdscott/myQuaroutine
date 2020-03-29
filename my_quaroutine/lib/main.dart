@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_quaroutine/models/Category.dart';
 import 'package:my_quaroutine/theme/style.dart';
 import 'create_goal_form.dart';
 import 'database_helpers.dart';
@@ -7,7 +8,34 @@ import 'package:intl/intl.dart';
 
 import 'package:my_quaroutine/models/Goal.dart';
 
-List<String> cats = ["Personal goals", "Outdoor fitness goal", "Shopping trips"];
+List<Category> cats = [
+  Category(
+      name: "Personal goals",
+      info: "Stuff you'd do around the house",
+      goalSuggestions: [
+        "Have a dance party",
+        "Learn how to do the worm",
+        "Learn slang in another language"
+      ]),
+  Category(
+      name: "Outdoor fitness goal",
+      info:
+          "The UK government allows one form of outdoor exercise a day, for example, a run, walk, or cycle: alone or with members of your household",
+      goalSuggestions: [
+        "Have a dance party",
+        "Learn how to do the worm",
+        "Learn slang in another language"
+      ]),
+  Category(
+      name: "Shopping",
+      info:
+          "The UK government allows shopping for basic necessities: “as infrequently as possible”",
+      goalSuggestions: [
+        "Have a dance party",
+        "Learn how to do the worm",
+        "Learn slang in another language"
+      ]),
+];
 
 void main() => runApp(MyApp());
 
@@ -53,7 +81,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Align(
                     alignment: Alignment.topLeft,
                     child: Text(
-                      false ? DateFormat('EEE d MMM').format(DateTime.now()) : "Today",
+                      false
+                          ? DateFormat('EEE d MMM').format(DateTime.now())
+                          : "Today",
                       style: TextStyle(fontSize: 35),
                     ))),
             projectWidget()
@@ -86,7 +116,7 @@ Widget projectWidget() {
                       alignment: Alignment.centerLeft,
                       child: Row(children: <Widget>[
                         Text(
-                          '${cats[index]}',
+                          '${cats[index].name}',
                           style: TextStyle(fontSize: 30.0),
                         ),
                         IconButton(
@@ -109,7 +139,7 @@ Widget projectWidget() {
                   Container(
                       height: 150.0,
                       child: ListThing(
-                          pee: Poo(type: cats[index], data: snapshot.data)))
+                          pee: Poo(cat: cats[index], data: snapshot.data)))
                 ]);
               },
             );
@@ -118,22 +148,22 @@ Widget projectWidget() {
   ));
 }
 
-String makeCompletedCount(type, data) {
+String makeCompletedCount(Category cat, data) {
   // Fixme to work when updated on screen
   return data
-          .where((i) => i.type == type && i.complete == true)
+          .where((i) => i.type == cat.name && i.complete == true)
           .toList()
           .length
           .toString() +
       "/" +
-      data.where((i) => i.type == type).toList().length.toString();
+      data.where((i) => i.type == cat.name).toList().length.toString();
 }
 
 class Poo {
-  String type;
+  Category cat;
   List<Goal> data;
 
-  Poo({this.type, this.data});
+  Poo({this.cat, this.data});
 }
 
 class ListThing extends StatelessWidget {
@@ -142,14 +172,14 @@ class ListThing extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Goal> meme = pee.data.where((i) => i.type == pee.type).toList();
+    List<Goal> meme = pee.data.where((i) => i.type == pee.cat.name).toList();
     return ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: meme.length + 1,
         itemBuilder: (context, index) {
           if (index == meme.length) {
             return CreateActivityButton(
-              data: new Data(text: pee.type),
+              cat: pee.cat,
             );
           }
           return ViewActivityButton(
@@ -159,19 +189,13 @@ class ListThing extends StatelessWidget {
   }
 }
 
-Future<void> _ackAlert(BuildContext context, String type) {
-  Map<String, String> me = Map.fromIterable(cats);
-  me["Personal goals"] = "Stuff you'd do around the house";
-  me["Outdoor fitness goal"] =
-      "The UK government allows one form of outdoor exercise a day, for example, a run, walk, or cycle: alone or with members of your household";
-  me["Shopping trips"] =
-      "The UK government allows shopping for basic necessities: “as infrequently as possible”";
+Future<void> _ackAlert(BuildContext context, Category cat) {
   return showDialog<void>(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text(type),
-        content: Text(me[type]),
+        title: Text(cat.name),
+        content: Text(cat.info),
         actions: <Widget>[
           FlatButton(
             child: Text('Ok'),

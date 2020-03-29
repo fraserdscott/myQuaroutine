@@ -1,21 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:my_quaroutine/database_helpers.dart';
+import 'package:my_quaroutine/models/Category.dart';
 import 'package:my_quaroutine/models/Goal.dart';
 
 import '../create_goal_form.dart';
 
-class Data {
-  String text;
-  Data({this.text});
-}
-
-class ScreenArguments {
-  final String type;
-
-  ScreenArguments(
-    this.type,
-  );
-}
 class ViewActivityButton extends StatefulWidget {
   final Goal activity;
   ViewActivityButton({this.activity});
@@ -72,8 +61,8 @@ Widget tick_or_not(activityCompleted){
 }
 
 class CreateActivityButton extends StatelessWidget {
-  final Data data;
-  CreateActivityButton({this.data});
+  final Category cat;
+  CreateActivityButton({this.cat});
 
   @override
   Widget build(BuildContext context) {
@@ -88,9 +77,7 @@ class CreateActivityButton extends StatelessWidget {
               Navigator.pushNamed(
                 context,
                 CreateGoalForm.routeName,
-                arguments: ScreenArguments(
-                  data.text,
-                ),
+                arguments: cat
               );
             }));
   }

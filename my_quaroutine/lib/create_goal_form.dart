@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:my_quaroutine/models/Category.dart';
 import 'package:my_quaroutine/models/Goal.dart';
 import "dart:math";
 
 import 'database_helpers.dart';
-import 'components/buttons.dart';
 
 class CreateGoalForm extends StatefulWidget {
   static const routeName = '/extractArguments';
@@ -20,12 +20,9 @@ class CreateGoalFormState extends State<CreateGoalForm> {
 
   final _random = new Random();
 
-  // todo refactor category strings into a class?
-  Map<String, List<String>> suggestions = {"Personal goals": ["Have a dance party", "Learn how to do the worm", "Learn slang in another language"]};
-
   @override
   Widget build(BuildContext context) {
-    final ScreenArguments args = ModalRoute.of(context).settings.arguments;
+    final Category args = ModalRoute.of(context).settings.arguments;
 
     final _controller = TextEditingController();
 
@@ -54,7 +51,7 @@ class CreateGoalFormState extends State<CreateGoalForm> {
               _formKey.currentState.save();
               final newGoal = Goal(
                 name: _name,
-                type: args.type,
+                type: args.name,
               );
               insertGoal(newGoal);
               Navigator.pop(context);
@@ -94,7 +91,7 @@ class CreateGoalFormState extends State<CreateGoalForm> {
                     color: Colors.green,
                     child: Text("Give me a suggestion!"),
                     onPressed: () {
-                      _controller.text = suggestions[args.type][_random.nextInt(suggestions[args.type].length)];
+                      _controller.text = args.goalSuggestions[_random.nextInt(args.goalSuggestions.length)];
                     },
                   )),
             ],
