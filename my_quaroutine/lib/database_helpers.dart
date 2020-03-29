@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:my_quaroutine/models/Activity.dart';
+import 'package:my_quaroutine/models/Goal.dart';
 
 void createDatabase() async {
-  // run this whne you update columns etc
+  // run this when you update columns etc
   //await deleteDatabase(join(await getDatabasesPath(), 'activity_database.db'));
   openDatabase(
     // Set the path to the database.
@@ -23,7 +23,7 @@ void createDatabase() async {
   );
 }
 
-Future<void> updateActivity(Activity activity) async {
+Future<void> updateGoal(Goal goal) async {
   final Future<Database> database = openDatabase(
     join(await getDatabasesPath(), 'activity_database.db'),
   );
@@ -33,15 +33,15 @@ Future<void> updateActivity(Activity activity) async {
 
   await db.update(
     'dogs',
-    activity.toMap(),
+    goal.toMap(),
     // Ensure that the Dog has a matching id.
     where: "id = ?",
     // Pass the Dog's id as a whereArg to prevent SQL injection.
-    whereArgs: [activity.id],
+    whereArgs: [goal.id],
   );
 }
 
-Future<void> deleteActivity(int id) async {
+Future<void> deleteGoal(int id) async {
   final Future<Database> database = openDatabase(
     join(await getDatabasesPath(), 'activity_database.db'),
   );
@@ -61,14 +61,14 @@ Future<void> deleteActivity(int id) async {
 
 
 // Define a function that inserts dogs into the database
-Future<void> insertActivity(Activity activity) async {
+Future<void> insertGoal(Goal goal) async {
   final Future<Database> database = openDatabase(
     join(await getDatabasesPath(), 'activity_database.db'),
   );
 
   final Database db = await database;
 
-  Map<String, dynamic> withoutID = activity.toMap();
+  Map<String, dynamic> withoutID = goal.toMap();
   withoutID.remove("id");
 
   await db.insert(
@@ -80,7 +80,7 @@ Future<void> insertActivity(Activity activity) async {
 
 
 // A method that retrieves all the dogs from the dogs table.
-Future<List<Activity>> activities() async {
+Future<List<Goal>> goals() async {
   // Open the database and store the reference.
   final Future<Database> database = openDatabase(
     // Set the path to the database. Note: Using the `join` function from the
@@ -101,7 +101,7 @@ Future<List<Activity>> activities() async {
     if (maps[i]['complete'] == 0){
       lol = false;
     }
-    return Activity(
+    return Goal(
       id: maps[i]['id'],
       name: maps[i]['name'],
       type: maps[i]['type'],

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:my_quaroutine/theme/style.dart';
-import 'lol.dart';
+import 'create_goal_form.dart';
 import 'database_helpers.dart';
 import 'components/buttons.dart';
 import 'package:intl/intl.dart';
 
-import 'package:my_quaroutine/models/Activity.dart';
+import 'package:my_quaroutine/models/Goal.dart';
 
 List<String> cats = ["Personal goals", "Indoor fitness goal", "Shopping trips"];
 
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       routes: {
-        MyCustomForm.routeName: (context) => MyCustomForm(),
+        CreateGoalForm.routeName: (context) => CreateGoalForm(),
       },
       title: 'My QuaRoutine',
       theme: appTheme(),
@@ -64,9 +64,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
 Widget projectWidget() {
   return new Expanded(
-      child: FutureBuilder<List<Activity>>(
-    future: activities(),
-    builder: (BuildContext context, AsyncSnapshot<List<Activity>> snapshot) {
+      child: FutureBuilder<List<Goal>>(
+    future: goals(),
+    builder: (BuildContext context, AsyncSnapshot<List<Goal>> snapshot) {
       switch (snapshot.connectionState) {
         case ConnectionState.waiting:
           return new Text('Loading....');
@@ -131,7 +131,7 @@ String makeCompletedCount(type, data) {
 
 class Poo {
   String type;
-  List<Activity> data;
+  List<Goal> data;
 
   Poo({this.type, this.data});
 }
@@ -142,7 +142,7 @@ class ListThing extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Activity> meme = pee.data.where((i) => i.type == pee.type).toList();
+    List<Goal> meme = pee.data.where((i) => i.type == pee.type).toList();
     return ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: meme.length + 1,

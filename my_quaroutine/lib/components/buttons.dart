@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:my_quaroutine/database_helpers.dart';
-import 'package:my_quaroutine/models/Activity.dart';
+import 'package:my_quaroutine/models/Goal.dart';
 
-import '../lol.dart';
+import '../create_goal_form.dart';
 
 class Data {
   String text;
@@ -17,7 +17,7 @@ class ScreenArguments {
   );
 }
 class ViewActivityButton extends StatefulWidget {
-  final Activity activity;
+  final Goal activity;
   ViewActivityButton({this.activity});
 
   @override
@@ -53,7 +53,7 @@ class ViewActivityButtonState extends State<ViewActivityButton> {
                 side: BorderSide(color: Colors.red)),
               onPressed: (){
               widget.activity.complete = !widget.activity.complete;
-              updateActivity(widget.activity);
+              updateGoal(widget.activity);
               setState((){
                 _activityComplete = widget.activity.complete;
               });
@@ -87,7 +87,7 @@ class CreateActivityButton extends StatelessWidget {
             onPressed: () {
               Navigator.pushNamed(
                 context,
-                MyCustomForm.routeName,
+                CreateGoalForm.routeName,
                 arguments: ScreenArguments(
                   data.text,
                 ),

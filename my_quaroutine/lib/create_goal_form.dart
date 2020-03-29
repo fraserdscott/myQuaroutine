@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:my_quaroutine/models/Activity.dart';
+import 'package:my_quaroutine/models/Goal.dart';
 
 import 'database_helpers.dart';
 import 'components/buttons.dart';
 
-
-class MyCustomForm extends StatefulWidget {
+class CreateGoalForm extends StatefulWidget {
   static const routeName = '/extractArguments';
 
   @override
-  MyCustomFormState createState() {
-    return MyCustomFormState();
+  CreateGoalFormState createState() {
+    return CreateGoalFormState();
   }
 }
 
-class MyCustomFormState extends State<MyCustomForm> {
+class CreateGoalFormState extends State<CreateGoalForm> {
   final _formKey = GlobalKey<FormState>();
   String _name;
 
@@ -25,7 +24,7 @@ class MyCustomFormState extends State<MyCustomForm> {
     // Build a Form widget using the _formKey created above.
     return Scaffold(
         appBar: AppBar(
-          title: Text("good evening"),
+          title: Text("Create a new goal"),
         ),
         body: Form(
           key: _formKey,
@@ -36,7 +35,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                 decoration: const InputDecoration(
                   icon: Icon(Icons.directions_run),
                   hintText: 'eg. Cooking',
-                  labelText: 'Activity name',
+                  labelText: 'Goal name',
                 ),
                 validator: (value) {
                   if (value.isEmpty) {
@@ -52,13 +51,11 @@ class MyCustomFormState extends State<MyCustomForm> {
                   onPressed: () {
                     if (_formKey.currentState.validate()) {
                       _formKey.currentState.save();
-                      final activity = Activity(
-                        id: -1,
+                      final newGoal = Goal(
                         name: _name,
                         type: args.type,
-                        complete: false,
                       );
-                      insertActivity(activity);
+                      insertGoal(newGoal);
                       Navigator.pop(context);
                     }
                   },
