@@ -8,6 +8,7 @@ import 'create_goal_form.dart';
 import 'database_helpers.dart';
 import 'components/buttons.dart';
 import 'package:intl/intl.dart';
+import 'edit_goal_form.dart';
 
 import 'package:my_quaroutine/models/Goal.dart';
 
@@ -49,6 +50,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       routes: {
         CreateGoalForm.routeName: (context) => CreateGoalForm(),
+        EditGoalForm.routeName: (context) => EditGoalForm(),
       },
       title: 'My QuaRoutine',
       theme: appTheme(),

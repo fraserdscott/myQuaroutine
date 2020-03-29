@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:my_quaroutine/models/Category.dart';
 import 'package:my_quaroutine/models/Goal.dart';
 import "dart:math";
 import 'components/buttons.dart';
@@ -7,7 +6,7 @@ import 'components/buttons.dart';
 import 'database_helpers.dart';
 
 class CreateGoalForm extends StatefulWidget {
-  static const routeName = '/extractArguments';
+  static const routeName = '/extractArguments2';
 
   @override
   CreateGoalFormState createState() {

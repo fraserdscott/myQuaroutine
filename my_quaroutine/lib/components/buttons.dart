@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:my_quaroutine/database_helpers.dart';
 import 'package:my_quaroutine/models/Category.dart';
 import 'package:my_quaroutine/models/Goal.dart';
-import 'package:my_quaroutine/theme/style.dart';
 
 import 'create_shopping_list.dart';
 import '../create_goal_form.dart';
+import '../edit_goal_form.dart';
 
 RoundedRectangleBorder border() {
   return RoundedRectangleBorder(
@@ -30,30 +30,36 @@ class ViewActivityButtonState extends State<ViewActivityButton> {
     return SizedBox(
         width: 150,
         height: 150,
-        child: FlatButton(
-            color: Color(0x60FFBB91),
-            shape: border(),
-            child: Stack(children: <Widget>[
-              Container(
-                  alignment: Alignment.topLeft,
-                  padding: EdgeInsets.only(top: 16),
-                  child: Text(
-                    widget.goal.name,
-                    style: TextStyle(
-                      fontSize: 22.0,
-                    ),
-                  )),
-              Container(
-                  alignment: Alignment.center,
-                  child: tick_or_not(_activityComplete)),
-            ]),
-            onPressed: () {
+        child: GestureDetector(
+            // When the child is tapped, show a snackbar.
+            onTap: () {
               widget.goal.complete = !widget.goal.complete;
               updateGoal(widget.goal);
               setState(() {
                 _activityComplete = widget.goal.complete;
               });
-            }));
+            },
+            onLongPress: () {
+              Navigator.pushNamed(context, EditGoalForm.routeName,
+                  arguments: widget.goal);
+            },
+            child: Container(
+              color: Color(0x60FFBB91),
+              child: Stack(children: <Widget>[
+                Container(
+                    alignment: Alignment.topLeft,
+                    padding: EdgeInsets.only(top: 16),
+                    child: Text(
+                      widget.goal.name,
+                      style: TextStyle(
+                        fontSize: 22.0,
+                      ),
+                    )),
+                Container(
+                    alignment: Alignment.center,
+                    child: tick_or_not(_activityComplete)),
+              ]),
+            )));
   }
 }
 

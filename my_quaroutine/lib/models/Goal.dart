@@ -1,8 +1,6 @@
-import 'package:intl/intl.dart';
-
 class Goal {
   final int id;
-  final String name;
+  String name;
   final String type;
   final DateTime date;
   bool complete;
