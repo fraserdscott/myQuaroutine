@@ -78,7 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
         body: Column(
           children: <Widget>[
             Container(
-                color: Colors.grey,
+                color: Colors.black12,
                 padding: EdgeInsets.only(left: 10, top: 5, bottom: 5),
                 child: Align(
                     alignment: Alignment.topLeft,
@@ -211,12 +211,12 @@ class GoalGridView extends StatelessWidget {
       }
     }
     return GridView.count(
+      physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
-
       crossAxisCount: 2,
       crossAxisSpacing: 20,
       mainAxisSpacing: 20,
-      padding: const EdgeInsets.all(15),
+      padding: const EdgeInsets.only(left: 30, right: 30, top: 10),
       children: tiles,
     );
   }

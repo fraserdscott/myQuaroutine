@@ -2,16 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:my_quaroutine/database_helpers.dart';
 import 'package:my_quaroutine/models/Category.dart';
 import 'package:my_quaroutine/models/Goal.dart';
+import 'package:my_quaroutine/theme/style.dart';
 
 import 'create_shopping_list.dart';
 import '../create_goal_form.dart';
 
-Color interiorColor = Colors.red;
-
 RoundedRectangleBorder border() {
   return RoundedRectangleBorder(
       borderRadius: new BorderRadius.circular(0.0),
-      side: BorderSide(color: Colors.black, width: 3));
+      side: BorderSide(color: Colors.black, width: 6));
 }
 
 class ViewActivityButton extends StatefulWidget {
@@ -32,7 +31,7 @@ class ViewActivityButtonState extends State<ViewActivityButton> {
         width: 150,
         height: 150,
         child: FlatButton(
-            color: interiorColor,
+            color: Colors.white,
             shape: border(),
             child: Stack(children: <Widget>[
               Container(
@@ -78,7 +77,7 @@ class CreateActivityButton extends StatelessWidget {
         width: 150,
         height: 150,
         child: FlatButton(
-            color: Colors.redAccent,
+            color: Colors.black12,
             shape: border(),
             child: Icon(Icons.add, size: 50),
             onPressed: () {
