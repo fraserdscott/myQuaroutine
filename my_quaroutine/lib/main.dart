@@ -114,9 +114,7 @@ Widget projectWidget() {
               ),
               itemBuilder: (context, index) {
                 return Column(children: <Widget>[
-                  Align(
-                      alignment: Alignment.centerLeft,
-                      child: Row(children: <Widget>[
+                      Row(children: <Widget>[
                         Text(
                           '${cats[index].name}',
                           style: TextStyle(fontSize: 30.0),
@@ -137,12 +135,11 @@ Widget projectWidget() {
                                 style: TextStyle(fontSize: 20),
                               )),
                         )
-                      ])),
-                  Container(
-                      height: 150.0,
-                      child: GoalListView(
-                              filterCategory: cats[index],
-                              goals: snapshot.data))
+                      ]),
+                  Column(
+                      mainAxisSize: MainAxisSize.max,
+                      children:  <Widget> [GoalGridView(
+                          filterCategory: cats[index], goals: snapshot.data)])
                 ]);
               },
             );
@@ -162,20 +159,19 @@ String makeCompletedCount(Category cat, data) {
       data.where((i) => i.type == cat.name).toList().length.toString();
 }
 
+//fixme this is broken when straight swapped with gridview
 class GoalListView extends StatelessWidget {
-  Category filterCategory;
-  List<Goal> goals;
+  final Category filterCategory;
+  final List<Goal> goals;
   GoalListView({this.filterCategory, this.goals});
 
   @override
   Widget build(BuildContext context) {
-    List<Goal> filteredGoals = goals
-        .where((i) => i.type == filterCategory.name)
-        .toList();
+    List<Goal> filteredGoals =
+        goals.where((i) => i.type == filterCategory.name).toList();
     return ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount:
-            min(filteredGoals.length + 1, filterCategory.limit),
+        itemCount: min(filteredGoals.length + 1, filterCategory.limit),
         itemBuilder: (context, index) {
           if (index == filteredGoals.length &&
               !(index >= filterCategory.limit)) {
@@ -187,6 +183,42 @@ class GoalListView extends StatelessWidget {
             goal: filteredGoals[index],
           );
         });
+  }
+}
+
+class GoalGridView extends StatelessWidget {
+  final Category filterCategory;
+  final List<Goal> goals;
+  GoalGridView({this.filterCategory, this.goals});
+
+  @override
+  Widget build(BuildContext context) {
+    List<Goal> filteredGoals =
+        goals.where((i) => i.type == filterCategory.name).toList();
+
+    List<Widget> tiles = [];
+    for (int index = 0;
+        index < min(filteredGoals.length + 1, filterCategory.limit);
+        index++) {
+      if (index == filteredGoals.length && !(index >= filterCategory.limit)) {
+        tiles.add(CreateActivityButton(
+          category: filterCategory,
+        ));
+      } else {
+        tiles.add(ViewActivityButton(
+          goal: filteredGoals[index],
+        ));
+      }
+    }
+    return GridView.count(
+      shrinkWrap: true,
+
+      crossAxisCount: 2,
+      crossAxisSpacing: 20,
+      mainAxisSpacing: 20,
+      padding: const EdgeInsets.all(15),
+      children: tiles,
+    );
   }
 }
 

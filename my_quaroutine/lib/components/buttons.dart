@@ -11,7 +11,7 @@ Color interiorColor = Colors.red;
 RoundedRectangleBorder border() {
   return RoundedRectangleBorder(
       borderRadius: new BorderRadius.circular(0.0),
-      side: BorderSide(color: Colors.black));
+      side: BorderSide(color: Colors.black, width: 3));
 }
 
 class ViewActivityButton extends StatefulWidget {
@@ -30,6 +30,7 @@ class ViewActivityButtonState extends State<ViewActivityButton> {
     _activityComplete = widget.goal.complete;
     return SizedBox(
         width: 150,
+        height: 150,
         child: FlatButton(
             color: interiorColor,
             shape: border(),
@@ -75,8 +76,9 @@ class CreateActivityButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
         width: 150,
+        height: 150,
         child: FlatButton(
-            color: interiorColor,
+            color: Colors.redAccent,
             shape: border(),
             child: Icon(Icons.add, size: 50),
             onPressed: () {
