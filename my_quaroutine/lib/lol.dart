@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:my_quaroutine/models/Activity.dart';
 
-import 'main.dart';
 import 'database_helpers.dart';
+import 'components/buttons.dart';
+
 
 class MyCustomForm extends StatefulWidget {
   static const routeName = '/extractArguments';
@@ -35,7 +36,7 @@ class MyCustomFormState extends State<MyCustomForm> {
               TextFormField(
                 decoration: const InputDecoration(
                   icon: Icon(Icons.directions_run),
-                  hintText: 'Cooking',
+                  hintText: 'eg. Cooking',
                   labelText: 'Activity name',
                 ),
                 validator: (value) {
@@ -53,10 +54,12 @@ class MyCustomFormState extends State<MyCustomForm> {
                     if (_formKey.currentState.validate()) {
                       _formKey.currentState.save();
                       final activity = Activity(
+                        id: -1,
                         name: _name,
                         type: args.type,
+                        complete: false,
                       );
-                      insertDog(activity);
+                      insertActivity(activity);
                     }
                     Navigator.pop(context);
                   },

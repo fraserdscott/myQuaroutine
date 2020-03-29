@@ -1,13 +1,17 @@
 class Activity {
+  final int id;
   final String name;
   final String type;
+  bool complete;
 
-  Activity({this.name, this.type});
+  Activity({this.id, this.name, this.type, this.complete});
 
   Map<String, dynamic> toMap() {
     return {
+      'id' : id,
       'name': name,
-      'type': type
+      'type': type,
+      'complete': complete,
     };
   }
 }
