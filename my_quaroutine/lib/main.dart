@@ -7,7 +7,7 @@ import 'package:intl/intl.dart';
 
 import 'package:my_quaroutine/models/Goal.dart';
 
-List<String> cats = ["Personal goals", "Indoor fitness goal", "Shopping trips"];
+List<String> cats = ["Personal goals", "Outdoor fitness goal", "Shopping trips"];
 
 void main() => runApp(MyApp());
 
@@ -162,7 +162,7 @@ class ListThing extends StatelessWidget {
 Future<void> _ackAlert(BuildContext context, String type) {
   Map<String, String> me = Map.fromIterable(cats);
   me["Personal goals"] = "Stuff you'd do around the house";
-  me["Indoor fitness goal"] =
+  me["Outdoor fitness goal"] =
       "The UK government allows one form of outdoor exercise a day, for example, a run, walk, or cycle: alone or with members of your household";
   me["Shopping trips"] =
       "The UK government allows shopping for basic necessities: “as infrequently as possible”";
