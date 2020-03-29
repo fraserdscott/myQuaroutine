@@ -73,7 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final DateTime picked = await showDatePicker(
         context: context,
         initialDate: selectedDate,
-        firstDate: DateTime(2015, 8),
+        firstDate: DateTime(2020, 3),
         lastDate: DateTime(2101));
     if (picked != null && picked != selectedDate)
       setState(() {
@@ -92,25 +92,26 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         body: Column(
           children: <Widget>[
-            Row(children: <Widget>[
-              Container(
-                  color: Colors.black12,
-                  padding: EdgeInsets.only(left: 10, top: 5, bottom: 5),
-                  child: Align(
-                      alignment: Alignment.topLeft,
-                      child: Text(
-                        DateFormat('EEE d MMM').format(selectedDate),
-                        style: TextStyle(fontSize: 35),
-                      ))),
-              Expanded(
-                  flex: 3,
-                  child: Align(
-                      alignment: Alignment.bottomRight,
-                      child: RaisedButton(
-                        onPressed: () => _selectDate(context),
-                        child: Text('Select date'),
-                      ))),
-            ]),
+            Container(
+                color: Colors.black12,
+                child: Row(children: <Widget>[
+                  Container(
+                      padding: EdgeInsets.only(left: 10, top: 5, bottom: 5),
+                      child: Align(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            DateFormat('EEE  d MMM').format(selectedDate),
+                            style: TextStyle(fontSize: 35),
+                          ))),
+                      Container(
+                        padding: EdgeInsets.only(left:10),
+                          alignment: Alignment.bottomRight,
+                          child: IconButton(icon:Icon(Icons.date_range),
+                            color: Colors.redAccent,
+                            onPressed: () => _selectDate(context),
+                            iconSize: 40,
+                          )),
+                ])),
             projectWidget(selectedDate)
           ],
         ));
@@ -154,19 +155,22 @@ Widget projectWidget(DateTime selectedDate) {
                           padding: EdgeInsets.only(right: 10),
                           alignment: Alignment.bottomRight,
                           child: Text(
-                            makeCompletedCount(cats[index], snapshot.data),
+                            makeCompletedCount(
+                                cats[index],
+                                snapshot.data
+                                    .where(
+                                        (i) => isSameDate(i.date, selectedDate))
+                                    .toList()),
                             style: TextStyle(fontSize: 20),
                           )),
                     )
                   ]),
                   Column(mainAxisSize: MainAxisSize.max, children: <Widget>[
                     GoalGridView(
-                      date:selectedDate,
+                        date: selectedDate,
                         filterCategory: cats[index],
                         goals: snapshot.data
-                            .where((i) =>
-                                i.date.difference(selectedDate).inDays == 0 &&
-                                i.date.day == selectedDate.day)
+                            .where((i) => isSameDate(i.date, selectedDate))
                             .toList())
                   ])
                 ]);
@@ -175,6 +179,10 @@ Widget projectWidget(DateTime selectedDate) {
       }
     },
   ));
+}
+
+bool isSameDate(date1, date2) {
+  return date1.difference(date2).inDays == 0 && date1.day == date2.day;
 }
 
 String makeCompletedCount(Category cat, data) {

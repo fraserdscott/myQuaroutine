@@ -31,7 +31,7 @@ class ViewActivityButtonState extends State<ViewActivityButton> {
         width: 150,
         height: 150,
         child: FlatButton(
-            color: Color(0x80FFBB91),
+            color: Color(0x60FFBB91),
             shape: border(),
             child: Stack(children: <Widget>[
               Container(
@@ -66,7 +66,6 @@ Widget tick_or_not(activityCompleted) {
     );
   }
 }
-
 
 class Data {
   final Category category;
