@@ -141,9 +141,8 @@ Widget projectWidget() {
                   Container(
                       height: 150.0,
                       child: GoalListView(
-                          container: GoalAndFilterContainer(
                               filterCategory: cats[index],
-                              goals: snapshot.data)))
+                              goals: snapshot.data))
                 ]);
               },
             );
@@ -163,31 +162,25 @@ String makeCompletedCount(Category cat, data) {
       data.where((i) => i.type == cat.name).toList().length.toString();
 }
 
-class GoalAndFilterContainer {
+class GoalListView extends StatelessWidget {
   Category filterCategory;
   List<Goal> goals;
-
-  GoalAndFilterContainer({this.filterCategory, this.goals});
-}
-
-class GoalListView extends StatelessWidget {
-  final GoalAndFilterContainer container;
-  GoalListView({this.container});
+  GoalListView({this.filterCategory, this.goals});
 
   @override
   Widget build(BuildContext context) {
-    List<Goal> filteredGoals = container.goals
-        .where((i) => i.type == container.filterCategory.name)
+    List<Goal> filteredGoals = goals
+        .where((i) => i.type == filterCategory.name)
         .toList();
     return ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount:
-            min(filteredGoals.length + 1, container.filterCategory.limit),
+            min(filteredGoals.length + 1, filterCategory.limit),
         itemBuilder: (context, index) {
           if (index == filteredGoals.length &&
-              !(index >= container.filterCategory.limit)) {
+              !(index >= filterCategory.limit)) {
             return CreateActivityButton(
-              category: container.filterCategory,
+              category: filterCategory,
             );
           }
           return ViewActivityButton(
