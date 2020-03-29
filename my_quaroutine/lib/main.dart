@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:my_quaroutine/models/Category.dart';
 import 'package:my_quaroutine/theme/style.dart';
@@ -21,19 +23,18 @@ List<Category> cats = [
       name: "Outdoor fitness goal",
       info:
           "The UK government allows one form of outdoor exercise a day, for example, a run, walk, or cycle: alone or with members of your household",
+      limit: 1,
       goalSuggestions: [
-        "Have a dance party",
-        "Learn how to do the worm",
-        "Learn slang in another language"
+        "Go for 30 minute run",
+        "Walk the door",
+        "Walk with family member"
       ]),
   Category(
       name: "Shopping",
       info:
           "The UK government allows shopping for basic necessities: “as infrequently as possible”",
       goalSuggestions: [
-        "Have a dance party",
-        "Learn how to do the worm",
-        "Learn slang in another language"
+        "Don't overbuy toilet paper",
       ]),
 ];
 
@@ -67,7 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     createDatabase();
-    //for (int i = 0; i < 29; i++) deleteActivity(i);
+    //for (int i = 0; i < 29; i++) deleteGoal(i);
 
     return Scaffold(
         appBar: AppBar(
@@ -81,7 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Align(
                     alignment: Alignment.topLeft,
                     child: Text(
-                      false
+                      true
                           ? DateFormat('EEE d MMM').format(DateTime.now())
                           : "Today",
                       style: TextStyle(fontSize: 35),
@@ -122,7 +123,7 @@ Widget projectWidget() {
                         IconButton(
                           icon: Icon(Icons.info_outline),
                           onPressed: () {
-                            _ackAlert(context, cats[index]);
+                            _categoryInfoAlert(context, cats[index]);
                           },
                         ),
                         Expanded(
@@ -138,8 +139,8 @@ Widget projectWidget() {
                       ])),
                   Container(
                       height: 150.0,
-                      child: ListThing(
-                          pee: Poo(cat: cats[index], data: snapshot.data)))
+                      child: GoalListView(
+                          container: GoalAndFilterContainer(filterCategory: cats[index], goals: snapshot.data)))
                 ]);
               },
             );
@@ -159,43 +160,43 @@ String makeCompletedCount(Category cat, data) {
       data.where((i) => i.type == cat.name).toList().length.toString();
 }
 
-class Poo {
-  Category cat;
-  List<Goal> data;
+class GoalAndFilterContainer {
+  Category filterCategory;
+  List<Goal> goals;
 
-  Poo({this.cat, this.data});
+  GoalAndFilterContainer({this.filterCategory, this.goals});
 }
 
-class ListThing extends StatelessWidget {
-  final Poo pee;
-  ListThing({this.pee});
+class GoalListView extends StatelessWidget {
+  final GoalAndFilterContainer container;
+  GoalListView({this.container});
 
   @override
   Widget build(BuildContext context) {
-    List<Goal> meme = pee.data.where((i) => i.type == pee.cat.name).toList();
+    List<Goal> filteredGoals = container.goals.where((i) => i.type == container.filterCategory.name).toList();
     return ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: meme.length + 1,
+        itemCount: min(filteredGoals.length + 1, container.filterCategory.limit),
         itemBuilder: (context, index) {
-          if (index == meme.length) {
+          if (index == filteredGoals.length && !(index >= container.filterCategory.limit)) {
             return CreateActivityButton(
-              cat: pee.cat,
+              category: container.filterCategory,
             );
           }
           return ViewActivityButton(
-            activity: meme[index],
+            goal: filteredGoals[index],
           );
         });
   }
 }
 
-Future<void> _ackAlert(BuildContext context, Category cat) {
+Future<void> _categoryInfoAlert(BuildContext context, Category category) {
   return showDialog<void>(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text(cat.name),
-        content: Text(cat.info),
+        title: Text(category.name),
+        content: Text(category.info),
         actions: <Widget>[
           FlatButton(
             child: Text('Ok'),
