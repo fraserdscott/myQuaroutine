@@ -19,20 +19,44 @@ List<Category> cats = [
       goalSuggestions: [
         "Have a dance party",
         "Learn how to do the worm",
-        "Learn slang in another language"
+        "Learn slang in another language",
+        "Solve the Rubik's cube",
+        "Bake a cake",
+        "Do spring cleaning",
+        "Clean out cupboards",
+        "Phone a friend",
+        "Video call a family member",
       ]),
   Category(
-      name: "Outdoor fitness goal",
+      name: "Outdoor goal",
       info:
           "The UK government allows one form of outdoor exercise a day, for example, a run, walk, or cycle: alone or with members of your household",
-      limit: 1,
+      allowedInfo: Container(
+          padding: EdgeInsets.all(30),
+          decoration: ShapeDecoration.fromBoxDecoration(BoxDecoration(
+            border: Border.all(width: 5),
+          )),
+          child: Column(children: <Widget>[
+            Text("STAY AT HOME", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
+            Text(
+              '''
+
+You can only leave home for:
+🛒Shopping for basic necessities
+🚴One form of exercise a day
+🤒Any medical need or to help a vulnerable person
+💼Travel to and from work, when this can't be done from home''',
+              style: TextStyle(fontSize: 20),
+            )
+          ])),
       goalSuggestions: [
         "Go for 30 minute run",
-        "Walk the door",
-        "Walk with family member"
+        "Walk the dog",
+        "Walk with family member",
+        "Go out on bicycle"
       ]),
   Category(
-      name: "Shopping list",
+      name: "Shopping",
       info:
           "The UK government allows shopping for basic necessities: “as infrequently as possible”",
       limit: 1,
@@ -105,14 +129,15 @@ class _MyHomePageState extends State<MyHomePage> {
                             DateFormat('EEE  d MMM').format(selectedDate),
                             style: TextStyle(fontSize: 35),
                           ))),
-                      Container(
-                        padding: EdgeInsets.only(left:10),
-                          alignment: Alignment.bottomRight,
-                          child: IconButton(icon:Icon(Icons.date_range),
-                            color: Colors.redAccent,
-                            onPressed: () => _selectDate(context),
-                            iconSize: 40,
-                          )),
+                  Container(
+                      padding: EdgeInsets.only(left: 10),
+                      alignment: Alignment.bottomRight,
+                      child: IconButton(
+                        icon: Icon(Icons.date_range),
+                        color: Colors.redAccent,
+                        onPressed: () => _selectDate(context),
+                        iconSize: 40,
+                      )),
                 ])),
             projectWidget(selectedDate)
           ],

@@ -10,7 +10,7 @@ import '../edit_goal_form.dart';
 RoundedRectangleBorder border() {
   return RoundedRectangleBorder(
       borderRadius: new BorderRadius.circular(0.0),
-      side: BorderSide(color: Colors.black, width: 6));
+      side: BorderSide(color: Colors.black, width: 5));
 }
 
 class ViewActivityButton extends StatefulWidget {
@@ -47,8 +47,11 @@ class ViewActivityButtonState extends State<ViewActivityButton> {
               color: Color(0x60FFBB91),
               child: Stack(children: <Widget>[
                 Container(
+                    decoration: ShapeDecoration.fromBoxDecoration(BoxDecoration(
+                      border: Border.all(width: 5),
+                    )),
                     alignment: Alignment.topLeft,
-                    padding: EdgeInsets.only(top: 16),
+                    padding: EdgeInsets.only(top: 16, left:5),
                     child: Text(
                       widget.goal.name,
                       style: TextStyle(

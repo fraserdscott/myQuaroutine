@@ -52,34 +52,39 @@ class CreateGoalFormState extends State<CreateGoalForm> {
           title: Text("Create a new goal"),
         ),
         body: Form(
-          key:_formKey,
+          key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              TextFormField(
-                controller: _controller,
-                decoration: const InputDecoration(
-                  icon: Icon(Icons.directions_run),
-                  labelText: 'Goal name',
-                  hintText: 'eg. Cooking',
-                ),
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Please enter some text';
-                  }
-                  return null;
-                },
-                onSaved: (value) => _name = value,
-              ),
+              Padding(
+                  padding: EdgeInsets.only(right: 20),
+                  child: TextFormField(
+                    style: TextStyle(fontSize: 20),
+                    controller: _controller,
+                    decoration: const InputDecoration(
+                      icon: Icon(Icons.directions_run),
+                      labelText: 'Goal name',
+                      hintText: 'eg. Cooking',
+                    ),
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return 'Please enter some text';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) => _name = value,
+                  )),
               Padding(
                   padding: EdgeInsets.all(10),
                   child: RaisedButton(
                     color: Colors.green,
                     child: Text("Give me a suggestion!"),
                     onPressed: () {
-                      _controller.text = args.category.goalSuggestions[_random.nextInt(args.category.goalSuggestions.length)];
+                      _controller.text = args.category.goalSuggestions[_random
+                          .nextInt(args.category.goalSuggestions.length)];
                     },
                   )),
+              args.category.allowedInfo,
             ],
           ),
         ));

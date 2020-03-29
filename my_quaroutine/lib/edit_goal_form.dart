@@ -46,13 +46,13 @@ class EditGoalFormState extends State<EditGoalForm> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Padding(
-                  padding: EdgeInsets.only(right: 20),
+                  padding: EdgeInsets.only(right: 20, left: 5),
                   child: TextFormField(
                     style: TextStyle(fontSize: 20),
                     controller: _controller,
                     decoration: const InputDecoration(
                       icon: Icon(Icons.directions_run),
-                      labelText: 'New goal name',
+                      labelText: 'New name',
                       hintText: 'eg. Cooking',
                     ),
                     validator: (value) {
