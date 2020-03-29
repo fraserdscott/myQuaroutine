@@ -39,9 +39,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     createDatabase();
-    for (int i = 0; i < 29; i++) {
-      //deleteDog(i);
-    }
+    //for (int i = 0; i < 29; i++) deleteActivity(i);
 
     return Scaffold(
         appBar: AppBar(
@@ -51,11 +49,11 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             Container(
                 color: Colors.grey,
-                padding: EdgeInsets.only(left: 10),
+                padding: EdgeInsets.only(left: 10, top: 5, bottom: 5),
                 child: Align(
                     alignment: Alignment.topLeft,
                     child: Text(
-                      DateFormat('EEE d MMM').format(DateTime.now()),
+                      false ? DateFormat('EEE d MMM').format(DateTime.now()) : "Today",
                       style: TextStyle(fontSize: 35),
                     ))),
             projectWidget()
@@ -96,6 +94,16 @@ Widget projectWidget() {
                           onPressed: () {
                             _ackAlert(context, cats[index]);
                           },
+                        ),
+                        Expanded(
+                          flex: 3,
+                          child: Container(
+                              padding: EdgeInsets.only(right: 10),
+                              alignment: Alignment.bottomRight,
+                              child: Text(
+                                makeCompletedCount(cats[index], snapshot.data),
+                                style: TextStyle(fontSize: 20),
+                              )),
                         )
                       ])),
                   Container(
@@ -108,6 +116,17 @@ Widget projectWidget() {
       }
     },
   ));
+}
+
+String makeCompletedCount(type, data) {
+  // Fixme to work when updated on screen
+  return data
+          .where((i) => i.type == type && i.complete == true)
+          .toList()
+          .length
+          .toString() +
+      "/" +
+      data.where((i) => i.type == type).toList().length.toString();
 }
 
 class Poo {
@@ -134,7 +153,7 @@ class ListThing extends StatelessWidget {
             );
           }
           return ViewActivityButton(
-            data: meme[index],
+            activity: meme[index],
           );
         });
   }

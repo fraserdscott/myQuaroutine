@@ -21,7 +21,6 @@ class MyCustomFormState extends State<MyCustomForm> {
   @override
   Widget build(BuildContext context) {
     final ScreenArguments args = ModalRoute.of(context).settings.arguments;
-    print(args.type);
 
     // Build a Form widget using the _formKey created above.
     return Scaffold(
@@ -60,8 +59,8 @@ class MyCustomFormState extends State<MyCustomForm> {
                         complete: false,
                       );
                       insertActivity(activity);
+                      Navigator.pop(context);
                     }
-                    Navigator.pop(context);
                   },
                   child: Text('Create goal'),
                 ),

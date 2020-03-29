@@ -17,56 +17,56 @@ class ScreenArguments {
   );
 }
 class ViewActivityButton extends StatefulWidget {
-  final Activity data;
-  ViewActivityButton({this.data});
+  final Activity activity;
+  ViewActivityButton({this.activity});
 
   @override
   ViewActivityButtonState createState() => new ViewActivityButtonState();
 }
 
 class ViewActivityButtonState extends State<ViewActivityButton> {
-  bool _activity_complete = false;
+  bool _activityComplete;
 
   @override
   Widget build(BuildContext context) {
+    _activityComplete = widget.activity.complete;
     return SizedBox(
         width: 150,
         child: FlatButton(
-            child: Column(children: <Widget>[
+            child: Stack(children: <Widget>[
               Container(
                   alignment: Alignment.topLeft,
                   padding: EdgeInsets.only(top: 16),
                   child: Text(
-                    widget.data.name,
+                    widget.activity.name,
                     style: TextStyle(
                       fontSize: 22.0,
                     ),
                   )),
-              Expanded(
-                  flex: 3,
-                  child: Container(
-                      padding: EdgeInsets.only(bottom: 10),
-                      alignment: Alignment.bottomCenter,
-                      child: ricky(_activity_complete))),
+                  Container(
+                      padding: EdgeInsets.only(top: 30),
+                      alignment: Alignment.center,
+                      child: tick_or_not(_activityComplete)),
             ]),
             shape: RoundedRectangleBorder(
                 borderRadius: new BorderRadius.circular(0.0),
                 side: BorderSide(color: Colors.red)),
               onPressed: (){
-              widget.data.complete = !widget.data.complete;
-              updateActivity(widget.data);
+              widget.activity.complete = !widget.activity.complete;
+              updateActivity(widget.activity);
               setState((){
-                _activity_complete = widget.data.complete;
+                _activityComplete = widget.activity.complete;
               });
             }));
   }
 }
 
-Widget ricky(metal){
-  if (metal) {
+Widget tick_or_not(activityCompleted){
+  if (activityCompleted) {
     return Icon(
-      Icons.verified_user,
-      size: 50,
+      Icons.thumb_up,
+      color: Colors.green,
+      size: 100,
     );
   }
 }
@@ -80,7 +80,7 @@ class CreateActivityButton extends StatelessWidget {
     return SizedBox(
         width: 150,
         child: FlatButton(
-            child: Icon(Icons.add),
+            child: Icon(Icons.add, size: 50),
             shape: RoundedRectangleBorder(
                 borderRadius: new BorderRadius.circular(0.0),
                 side: BorderSide(color: Colors.red)),

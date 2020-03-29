@@ -23,7 +23,7 @@ void createDatabase() async {
   );
 }
 
-Future<void> updateActivity(Activity dog) async {
+Future<void> updateActivity(Activity activity) async {
   final Future<Database> database = openDatabase(
     join(await getDatabasesPath(), 'activity_database.db'),
   );
@@ -31,14 +31,13 @@ Future<void> updateActivity(Activity dog) async {
   // Get a reference to the database.
   final db = await database;
 
-  // Update the given Dog.
   await db.update(
     'dogs',
-    dog.toMap(),
+    activity.toMap(),
     // Ensure that the Dog has a matching id.
     where: "id = ?",
     // Pass the Dog's id as a whereArg to prevent SQL injection.
-    whereArgs: [dog.id],
+    whereArgs: [activity.id],
   );
 }
 
@@ -103,6 +102,7 @@ Future<List<Activity>> activities() async {
       lol = false;
     }
     return Activity(
+      id: maps[i]['id'],
       name: maps[i]['name'],
       type: maps[i]['type'],
       complete: lol,
