@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_quaroutine/models/Category.dart';
 import 'package:my_quaroutine/theme/style.dart';
@@ -66,6 +67,20 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  DateTime selectedDate = DateTime.now();
+
+  Future<Null> _selectDate(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: selectedDate,
+        firstDate: DateTime(2015, 8),
+        lastDate: DateTime(2101));
+    if (picked != null && picked != selectedDate)
+      setState(() {
+        selectedDate = picked;
+      });
+  }
+
   @override
   Widget build(BuildContext context) {
     createDatabase();
@@ -77,24 +92,32 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         body: Column(
           children: <Widget>[
-            Container(
-                color: Colors.black12,
-                padding: EdgeInsets.only(left: 10, top: 5, bottom: 5),
-                child: Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      true
-                          ? DateFormat('EEE d MMM').format(DateTime.now())
-                          : "Today",
-                      style: TextStyle(fontSize: 35),
-                    ))),
-            projectWidget()
+            Row(children: <Widget>[
+              Container(
+                  color: Colors.black12,
+                  padding: EdgeInsets.only(left: 10, top: 5, bottom: 5),
+                  child: Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        DateFormat('EEE d MMM').format(selectedDate),
+                        style: TextStyle(fontSize: 35),
+                      ))),
+              Expanded(
+                  flex: 3,
+                  child: Align(
+                      alignment: Alignment.bottomRight,
+                      child: RaisedButton(
+                        onPressed: () => _selectDate(context),
+                        child: Text('Select date'),
+                      ))),
+            ]),
+            projectWidget(selectedDate)
           ],
         ));
   }
 }
 
-Widget projectWidget() {
+Widget projectWidget(DateTime selectedDate) {
   return new Expanded(
       child: FutureBuilder<List<Goal>>(
     future: goals(),
@@ -114,32 +137,38 @@ Widget projectWidget() {
               ),
               itemBuilder: (context, index) {
                 return Column(children: <Widget>[
-                      Row(children: <Widget>[
-                        Text(
-                          '${cats[index].name}',
-                          style: TextStyle(fontSize: 30.0),
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.info_outline),
-                          onPressed: () {
-                            _categoryInfoAlert(context, cats[index]);
-                          },
-                        ),
-                        Expanded(
-                          flex: 3,
-                          child: Container(
-                              padding: EdgeInsets.only(right: 10),
-                              alignment: Alignment.bottomRight,
-                              child: Text(
-                                makeCompletedCount(cats[index], snapshot.data),
-                                style: TextStyle(fontSize: 20),
-                              )),
-                        )
-                      ]),
-                  Column(
-                      mainAxisSize: MainAxisSize.max,
-                      children:  <Widget> [GoalGridView(
-                          filterCategory: cats[index], goals: snapshot.data)])
+                  Row(children: <Widget>[
+                    Text(
+                      '${cats[index].name}',
+                      style: TextStyle(fontSize: 30.0),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.info_outline),
+                      onPressed: () {
+                        _categoryInfoAlert(context, cats[index]);
+                      },
+                    ),
+                    Expanded(
+                      flex: 3,
+                      child: Container(
+                          padding: EdgeInsets.only(right: 10),
+                          alignment: Alignment.bottomRight,
+                          child: Text(
+                            makeCompletedCount(cats[index], snapshot.data),
+                            style: TextStyle(fontSize: 20),
+                          )),
+                    )
+                  ]),
+                  Column(mainAxisSize: MainAxisSize.max, children: <Widget>[
+                    GoalGridView(
+                      date:selectedDate,
+                        filterCategory: cats[index],
+                        goals: snapshot.data
+                            .where((i) =>
+                                i.date.difference(selectedDate).inDays == 0 &&
+                                i.date.day == selectedDate.day)
+                            .toList())
+                  ])
                 ]);
               },
             );
@@ -163,7 +192,9 @@ String makeCompletedCount(Category cat, data) {
 class GoalListView extends StatelessWidget {
   final Category filterCategory;
   final List<Goal> goals;
-  GoalListView({this.filterCategory, this.goals});
+  final DateTime date;
+
+  GoalListView({this.filterCategory, this.goals, this.date});
 
   @override
   Widget build(BuildContext context) {
@@ -177,6 +208,7 @@ class GoalListView extends StatelessWidget {
               !(index >= filterCategory.limit)) {
             return CreateActivityButton(
               category: filterCategory,
+              date: date,
             );
           }
           return ViewActivityButton(
@@ -189,7 +221,9 @@ class GoalListView extends StatelessWidget {
 class GoalGridView extends StatelessWidget {
   final Category filterCategory;
   final List<Goal> goals;
-  GoalGridView({this.filterCategory, this.goals});
+  final DateTime date;
+
+  GoalGridView({this.filterCategory, this.goals, this.date});
 
   @override
   Widget build(BuildContext context) {
@@ -203,6 +237,7 @@ class GoalGridView extends StatelessWidget {
       if (index == filteredGoals.length && !(index >= filterCategory.limit)) {
         tiles.add(CreateActivityButton(
           category: filterCategory,
+          date: date,
         ));
       } else {
         tiles.add(ViewActivityButton(

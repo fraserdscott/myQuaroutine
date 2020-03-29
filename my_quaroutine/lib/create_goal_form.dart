@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:my_quaroutine/models/Category.dart';
 import 'package:my_quaroutine/models/Goal.dart';
 import "dart:math";
+import 'components/buttons.dart';
 
 import 'database_helpers.dart';
 
@@ -22,7 +23,7 @@ class CreateGoalFormState extends State<CreateGoalForm> {
 
   @override
   Widget build(BuildContext context) {
-    final Category args = ModalRoute.of(context).settings.arguments;
+    final Data args = ModalRoute.of(context).settings.arguments;
 
     final _controller = TextEditingController();
 
@@ -32,10 +33,13 @@ class CreateGoalFormState extends State<CreateGoalForm> {
           onPressed: () {
             if (_formKey.currentState.validate()) {
               _formKey.currentState.save();
+
               final newGoal = Goal(
                 name: _name,
-                type: args.name,
+                type: args.category.name,
+                date: args.date,
               );
+
               insertGoal(newGoal);
               Navigator.pop(context);
             }
@@ -49,6 +53,7 @@ class CreateGoalFormState extends State<CreateGoalForm> {
           title: Text("Create a new goal"),
         ),
         body: Form(
+          key:_formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -73,7 +78,7 @@ class CreateGoalFormState extends State<CreateGoalForm> {
                     color: Colors.green,
                     child: Text("Give me a suggestion!"),
                     onPressed: () {
-                      _controller.text = args.goalSuggestions[_random.nextInt(args.goalSuggestions.length)];
+                      _controller.text = args.category.goalSuggestions[_random.nextInt(args.category.goalSuggestions.length)];
                     },
                   )),
             ],

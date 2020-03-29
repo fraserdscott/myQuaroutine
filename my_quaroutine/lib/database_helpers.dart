@@ -14,7 +14,7 @@ void createDatabase() async {
     onCreate: (db, version) {
       // Run the CREATE TABLE statement on the database.
       return db.execute(
-        "CREATE TABLE dogs(id INTEGER PRIMARY KEY, name TEXT, type TEXT, complete BIT)",
+        "CREATE TABLE dogs(id INTEGER PRIMARY KEY, name TEXT, type TEXT, date DATE, complete BIT)",
       );
     },
     // Set the version. This executes the onCreate function and provides a
@@ -97,15 +97,16 @@ Future<List<Goal>> goals() async {
 
   // Convert the List<Map<String, dynamic> into a List<Dog>.
   return List.generate(maps.length, (i) {
-    bool lol = true;
+    bool goalComplete = true;
     if (maps[i]['complete'] == 0){
-      lol = false;
+      goalComplete = false;
     }
     return Goal(
       id: maps[i]['id'],
       name: maps[i]['name'],
       type: maps[i]['type'],
-      complete: lol,
+      date: DateTime.parse(maps[i]['date']),
+      complete: goalComplete,
     );
   });
 }

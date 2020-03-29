@@ -31,7 +31,7 @@ class ViewActivityButtonState extends State<ViewActivityButton> {
         width: 150,
         height: 150,
         child: FlatButton(
-            color: Colors.white,
+            color: Color(0x80FFBB91),
             shape: border(),
             child: Stack(children: <Widget>[
               Container(
@@ -67,9 +67,19 @@ Widget tick_or_not(activityCompleted) {
   }
 }
 
+
+class Data {
+  final Category category;
+  final DateTime date;
+
+  Data({this.category, this.date});
+}
+
 class CreateActivityButton extends StatelessWidget {
   final Category category;
-  CreateActivityButton({this.category});
+  final DateTime date;
+
+  CreateActivityButton({this.category, this.date});
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +99,7 @@ class CreateActivityButton extends StatelessWidget {
                 );
               } else {
                 Navigator.pushNamed(context, CreateGoalForm.routeName,
-                    arguments: category);
+                    arguments: Data(category: category, date: date));
               }
             }));
   }

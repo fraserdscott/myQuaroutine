@@ -1,18 +1,20 @@
+import 'package:intl/intl.dart';
+
 class Goal {
   final int id;
   final String name;
   final String type;
+  final DateTime date;
   bool complete;
 
-  // Goals initially have no ID as this is auto incremented from database
-  // Goals are initially not completed
-  Goal({this.id = -1, this.name, this.type, this.complete = false});
+  Goal({this.id = -1, this.name, this.type, this.date, this.complete = false});
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'name': name,
       'type': type,
+      'date': date.toString().substring(0,10),
       'complete': complete,
     };
   }
