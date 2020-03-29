@@ -30,9 +30,10 @@ List<Category> cats = [
         "Walk with family member"
       ]),
   Category(
-      name: "Shopping",
+      name: "Shopping list",
       info:
           "The UK government allows shopping for basic necessities: “as infrequently as possible”",
+      limit: 1,
       goalSuggestions: [
         "Don't overbuy toilet paper",
       ]),
@@ -140,7 +141,9 @@ Widget projectWidget() {
                   Container(
                       height: 150.0,
                       child: GoalListView(
-                          container: GoalAndFilterContainer(filterCategory: cats[index], goals: snapshot.data)))
+                          container: GoalAndFilterContainer(
+                              filterCategory: cats[index],
+                              goals: snapshot.data)))
                 ]);
               },
             );
@@ -173,12 +176,16 @@ class GoalListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Goal> filteredGoals = container.goals.where((i) => i.type == container.filterCategory.name).toList();
+    List<Goal> filteredGoals = container.goals
+        .where((i) => i.type == container.filterCategory.name)
+        .toList();
     return ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: min(filteredGoals.length + 1, container.filterCategory.limit),
+        itemCount:
+            min(filteredGoals.length + 1, container.filterCategory.limit),
         itemBuilder: (context, index) {
-          if (index == filteredGoals.length && !(index >= container.filterCategory.limit)) {
+          if (index == filteredGoals.length &&
+              !(index >= container.filterCategory.limit)) {
             return CreateActivityButton(
               category: container.filterCategory,
             );

@@ -3,7 +3,16 @@ import 'package:my_quaroutine/database_helpers.dart';
 import 'package:my_quaroutine/models/Category.dart';
 import 'package:my_quaroutine/models/Goal.dart';
 
+import 'create_shopping_list.dart';
 import '../create_goal_form.dart';
+
+Color interiorColor = Colors.red;
+
+RoundedRectangleBorder border() {
+  return RoundedRectangleBorder(
+      borderRadius: new BorderRadius.circular(0.0),
+      side: BorderSide(color: Colors.black));
+}
 
 class ViewActivityButton extends StatefulWidget {
   final Goal goal;
@@ -22,6 +31,8 @@ class ViewActivityButtonState extends State<ViewActivityButton> {
     return SizedBox(
         width: 150,
         child: FlatButton(
+            color: interiorColor,
+            shape: border(),
             child: Stack(children: <Widget>[
               Container(
                   alignment: Alignment.topLeft,
@@ -36,9 +47,6 @@ class ViewActivityButtonState extends State<ViewActivityButton> {
                   alignment: Alignment.center,
                   child: tick_or_not(_activityComplete)),
             ]),
-            shape: RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(0.0),
-                side: BorderSide(color: Colors.red)),
             onPressed: () {
               widget.goal.complete = !widget.goal.complete;
               updateGoal(widget.goal);
@@ -68,13 +76,20 @@ class CreateActivityButton extends StatelessWidget {
     return SizedBox(
         width: 150,
         child: FlatButton(
+            color: interiorColor,
+            shape: border(),
             child: Icon(Icons.add, size: 50),
-            shape: RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(0.0),
-                side: BorderSide(color: Colors.red)),
             onPressed: () {
-              Navigator.pushNamed(context, CreateGoalForm.routeName,
-                  arguments: category);
+              if (category.name == "Shopping list") {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CreateShoppingListForm()),
+                );
+              } else {
+                Navigator.pushNamed(context, CreateGoalForm.routeName,
+                    arguments: category);
+              }
             }));
   }
 }

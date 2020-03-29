@@ -26,23 +26,6 @@ class CreateGoalFormState extends State<CreateGoalForm> {
 
     final _controller = TextEditingController();
 
-    void initState() {
-      _controller.addListener(() {
-        final text = _controller.text.toLowerCase();
-        _controller.value = _controller.value.copyWith(
-          text: text,
-          selection: TextSelection(baseOffset: text.length, extentOffset: text.length),
-          composing: TextRange.empty,
-        );
-      });
-      super.initState();
-    }
-
-    void dispose() {
-      _controller.dispose();
-      super.dispose();
-    }
-
     // Build a Form widget using the _formKey created above.
     return Scaffold(
         floatingActionButton: FloatingActionButton(
@@ -66,7 +49,6 @@ class CreateGoalFormState extends State<CreateGoalForm> {
           title: Text("Create a new goal"),
         ),
         body: Form(
-          key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
